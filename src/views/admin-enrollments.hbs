@@ -1,0 +1,27 @@
+<h1>Admin - Inscripciones</h1>
+<p class="muted">Aprueba o rechaza solicitudes.</p>
+
+<div class="flash hidden" id="flash"></div>
+
+<div style="display:flex; gap:10px; align-items:center; margin: 12px 0;">
+  <span class="muted">Filtro:</span>
+  <select id="filterStatus" class="select">
+    <option value="PENDIENTE" selected>Pendientes</option>
+    <option value="ALL">Todas</option>
+  </select>
+  <button id="btnRefresh" class="btn secondary">Refrescar</button>
+</div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Estudiante</th>
+      <th>Curso</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="adminEnrollmentsTbody"></tbody>
+</table>
+
+<script src="/js/admin-enrollments.js"></script>

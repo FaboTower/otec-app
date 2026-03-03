@@ -1,15 +1,15 @@
 const express = require("express");
 const path = require("path");
-const hbs = require("hbs");
+const { engine } = require("express-handlebars");
 const morgan = require("morgan");
 require("dotenv").config();
 
 const apiRoutes = require("./src/routes/api.routes");
 const notFound = require("./src/middlewares/notFound.middleware");
 const errorHandler = require("./src/middlewares/error.middleware");
-
+const viewRoutes = require("./src/routes/view.routes");
 const sequelize = require("./src/config/db");
-require("./src/models"); // importa asociaciones
+require("./src/models");
 
 const app = express();
 
@@ -17,18 +17,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+// ✅ Handlebars engine (layouts + partials)
+app.engine(
+  "hbs",
+  engine({
+    extname: ".hbs",
+    layoutsDir: path.join(__dirname, "src/views/layouts"),
+    partialsDir: path.join(__dirname, "src/views/partials"),
+    defaultLayout: "main", // usa layouts/main.hbs
+  })
+);
+
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "src/views"));
 
-hbs.registerPartials(path.join(__dirname, "src/views/partials"));
-
+// ✅ estáticos
 app.use(express.static(path.join(__dirname, "src/public")));
 
+// ✅ rutas
 app.use("/api", apiRoutes);
-
-app.get("/", (req, res) => {
-  res.render("home", { title: "Instituto Fullstack" });
-});
+app.use("/", viewRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -1,0 +1,40 @@
+<h1>Mis inscripciones</h1>
+<p class="muted">Estado de tus solicitudes y calificaciones.</p>
+
+<div class="flash hidden" id="flash"></div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Curso</th>
+      <th>Estado</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody id="enrollmentsTbody"></tbody>
+</table>
+
+<div id="gradesPanel" class="card hidden" style="margin-top:16px;">
+  <div class="card-body">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+      <h3 style="margin:0;">Notas</h3>
+      <button id="btnCloseGrades" class="btn secondary">Cerrar</button>
+    </div>
+
+    <p id="gradesSubtitle" class="card-desc" style="margin-top:8px;"></p>
+
+    <table class="table" style="margin-top:12px;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Puntaje</th>
+          <th>Feedback</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody id="gradesTbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="/js/enrollments.js"></script>

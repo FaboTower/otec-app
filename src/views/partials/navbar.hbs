@@ -1,3 +1,61 @@
-<nav>
-  <a href="/">Inicio</a>
+<nav class="navbar">
+  <div class="nav-left">
+    <a class="brand" href="/">OTEC</a>
+    <a href="/courses">Cursos</a>
+    <a href="/enrollments">Mis inscripciones</a>
+    <a href="/admin/enrollments">Admin</a>
+    <a href="/admin/grades">Notas</a>
+  </div>
+
+  <div class="nav-right">
+    <span id="demoStatus" class="demo-pill">Activo: cargando...</span>
+    <button id="btnTogglePanel" class="btn secondary">⚙️ Panel</button>
+  </div>
 </nav>
+
+<div id="demoPanel" class="demo-panel hidden">
+  <div class="demo-panel-grid">
+    <div class="demo-block">
+      <h4>Sesión demo</h4>
+      <div class="demo-row">
+        <label>StudentId</label>
+        <input id="demoStudentId" type="number" min="1" />
+        <button id="btnSaveStudent" class="btn secondary">Guardar</button>
+      </div>
+
+      <div class="demo-row">
+        <label>AdminToken</label>
+        <input id="demoAdminToken" type="password" />
+        <button id="btnSaveAdmin" class="btn secondary">Guardar</button>
+      </div>
+    </div>
+
+    <div class="demo-block">
+      <h4>Crear estudiante</h4>
+      <div class="demo-row">
+        <label>Nombre</label>
+        <input id="newStudentName" type="text" placeholder="Nombre" />
+      </div>
+      <div class="demo-row">
+        <label>Email</label>
+        <input id="newStudentEmail" type="email" placeholder="Email" />
+      </div>
+      <button id="btnCreateStudent" class="btn">Crear</button>
+    </div>
+
+    <div class="demo-block">
+      <h4>Crear curso</h4>
+      <div class="demo-row">
+        <label>Título</label>
+        <input id="newCourseTitle" type="text" placeholder="Título" />
+      </div>
+      <div class="demo-row">
+        <label>Cupo</label>
+        <input id="newCourseCapacity" type="number" min="1" placeholder="Cupo" />
+      </div>
+      <button id="btnCreateCourse" class="btn">Crear</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/demo-panel.js"></script>
