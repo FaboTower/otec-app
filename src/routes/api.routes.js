@@ -12,3 +12,5 @@ router.use("/enrollments", enrollmentRoutes);
 router.use("/grades", gradeRoutes);
 
 module.exports = router;
+
+//http:localhost:3000/api/

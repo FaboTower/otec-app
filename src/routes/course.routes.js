@@ -14,3 +14,6 @@ router.put("/:id", adminAuth, CourseController.update);
 router.delete("/:id", adminAuth, CourseController.remove);
 
 module.exports = router;
+
+
+//http:localhost:3000/api/courses/

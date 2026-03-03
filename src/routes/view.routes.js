@@ -11,3 +11,6 @@ router.get("/admin/enrollments", ViewController.adminEnrollmentsPage);
 router.get("/admin/grades", ViewController.adminGradesPage);
 
 module.exports = router;
+
+
+//http:localhost:3000/courses
