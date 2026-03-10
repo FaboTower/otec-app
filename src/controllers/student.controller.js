@@ -1,3 +1,5 @@
+const path = require("path");
+
 const StudentService = require("../services/student.service");
 
 const StudentController = {
@@ -43,6 +45,53 @@ const StudentController = {
       res.json({ ok: true, message: "Estudiante eliminado" });
     } catch (err) {
       next(err);
+    }
+  },
+
+  uploadImage: async (req, res, next) => {
+    try {
+      const id = Number(req.params.id);
+
+      if (Number.isNaN(id)) {
+        return res.status(400).json({
+          ok: false,
+          error: "ID no válido",
+        });
+      }
+
+      if (!req.files || !req.files.image) {
+        return res.status(400).json({
+          ok: false,
+          error: "No se envió ningún archivo.",
+        });
+      }
+
+      await StudentService.getById(id);
+
+      const archivo = req.files.image;
+      const extPermitidas = [".png", ".jpg", ".jpeg"];
+      const extension = path.extname(archivo.name).toLocaleLowerCase();
+
+      if (!extPermitidas.includes(extension)) {
+        return res.status(400).json({
+          ok: false,
+          error: "Extensión no permitida.",
+        });
+      }
+
+      const nombreArchivo = `profile_picture_${id}_${Date.now()}${extension}`;
+      const ruta = path.join(__dirname, "../../files", nombreArchivo);
+
+      await archivo.mv(ruta);
+      const updated = await StudentService.update(id, { image: nombreArchivo });
+
+      return res.status(200).json({
+        ok: true,
+        mensaje: "Imagen subida correctamente",
+        data: updated,
+      });
+    } catch (error) {
+      next(error);
     }
   },
 };

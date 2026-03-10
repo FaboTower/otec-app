@@ -1,10 +1,44 @@
 const $btnToggle = document.getElementById("btnTogglePanel");
 const $panel = document.getElementById("demoPanel");
+const $navStudentImage = document.getElementById("navStudentImage");
 
 $btnToggle?.addEventListener("click", () => {
   $panel.classList.toggle("hidden");
 });
 
+function setNavbarStudentImage(image) {
+  if (!$navStudentImage) return;
+
+  if (!image) {
+    $navStudentImage.src = "";
+    $navStudentImage.classList.add("hidden");
+    return;
+  }
+
+  $navStudentImage.src = `/uploads/${image}`;
+  $navStudentImage.classList.remove("hidden");
+}
+
+async function uploadStudentImage(id) {
+  const inputFile = document.getElementById("fuImagen");
+  const file = inputFile?.files?.[0];
+  if (!file) return null;
+
+  const formData = new FormData();
+  formData.append("image", file);
+
+  const response = await fetch(`/api/students/${id}/image`, {
+    method: "POST",
+    body: formData,
+  });
+
+  const json = await response.json();
+  if (!response.ok || !json.ok) {
+    throw new Error(json.message || json.error || "No se pudo subir la imagen");
+  }
+
+  return json.data;
+}
 
 (async function () {
   const $studentId = document.getElementById("demoStudentId");
@@ -36,7 +70,7 @@ $btnToggle?.addEventListener("click", () => {
   ) return;
 
   function setStatus(text) {
-    $status.innerHTML = `<span class="demo-pill">${text}</span>`;
+    $status.textContent = text;
   }
 
   function adminHeaders() {
@@ -51,19 +85,21 @@ $btnToggle?.addEventListener("click", () => {
     return json.data;
   }
 
-  // Load initial
   const currentStudentId = Number(localStorage.getItem("studentId") || 1);
   const currentAdminToken = localStorage.getItem("adminToken") || "admin123";
 
   $studentId.value = String(currentStudentId);
   $adminToken.value = currentAdminToken;
 
-  // Paint initial status
   const student = await fetchStudent(currentStudentId);
-  if (student) setStatus(`Activo: ${student.fullName} (#${student.id})`);
-  else setStatus(`Activo: StudentId #${currentStudentId} (no existe)`);
+  if (student) {
+    setStatus(`Activo: ${student.fullName} (#${student.id})`);
+    setNavbarStudentImage(student.image);
+  } else {
+    setStatus(`Activo: StudentId #${currentStudentId} (no existe)`);
+    setNavbarStudentImage(null);
+  }
 
-  // Save StudentId
   $btnStudent.addEventListener("click", async () => {
     const val = Number($studentId.value);
 
@@ -77,16 +113,17 @@ $btnToggle?.addEventListener("click", () => {
     const st = await fetchStudent(val);
     if (!st) {
       setStatus(`Activo: StudentId #${val} (no existe)`);
-      alert("❌ Ese StudentId no existe. Crea el estudiante primero.");
+      setNavbarStudentImage(null);
+      alert("Ese StudentId no existe. Crea el estudiante primero.");
       return;
     }
 
     localStorage.setItem("studentId", String(val));
     setStatus(`Activo: ${st.fullName} (#${st.id})`);
-    alert(`✅ Student activo: ${st.fullName} (#${st.id})`);
+    setNavbarStudentImage(st.image);
+    alert(`Student activo: ${st.fullName} (#${st.id})`);
   });
 
-  // Save AdminToken
   $btnAdmin.addEventListener("click", () => {
     const token = String($adminToken.value || "").trim();
     if (!token) {
@@ -94,10 +131,9 @@ $btnToggle?.addEventListener("click", () => {
       return;
     }
     localStorage.setItem("adminToken", token);
-    alert("✅ AdminToken guardado");
+    alert("AdminToken guardado");
   });
 
-  // Create Student
   $btnCreate.addEventListener("click", async () => {
     const fullName = String($newName.value || "").trim();
     const email = String($newEmail.value || "").trim();
@@ -127,20 +163,28 @@ $btnToggle?.addEventListener("click", () => {
       return;
     }
 
-    const created = json.data;
+    let created = json.data;
 
-    // auto-set como estudiante activo
+    try {
+      const studentWithImage = await uploadStudentImage(created.id);
+      if (studentWithImage) created = studentWithImage;
+    } catch (error) {
+      alert(error.message);
+    }
+
     localStorage.setItem("studentId", String(created.id));
     $studentId.value = String(created.id);
 
     setStatus(`Activo: ${created.fullName} (#${created.id})`);
-    alert(`✅ Estudiante creado y activado: ${created.fullName} (#${created.id})`);
+    setNavbarStudentImage(created.image);
+    alert(`Estudiante creado y activado: ${created.fullName} (#${created.id})`);
 
     $newName.value = "";
     $newEmail.value = "";
+    const inputFile = document.getElementById("fuImagen");
+    if (inputFile) inputFile.value = "";
   });
 
-  // Create Course
   $btnCreateCourse.addEventListener("click", async () => {
     const title = String($newCourseTitle.value || "").trim();
     const capacity = Number($newCourseCapacity.value || 20);
@@ -176,7 +220,7 @@ $btnToggle?.addEventListener("click", () => {
 
     const created = json.data;
     setStatus(`Curso creado: ${created.title} (#${created.id})`);
-    alert(`✅ Curso creado: ${created.title} (#${created.id})`);
+    alert(`Curso creado: ${created.title} (#${created.id})`);
 
     $newCourseTitle.value = "";
     $newCourseCapacity.value = "";

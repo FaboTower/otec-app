@@ -1,5 +1,7 @@
 const express = require("express");
+const fileupload = require("express-fileupload");
 const path = require("path");
+const fs = require("fs");
 const { engine } = require("express-handlebars");
 const morgan = require("morgan");
 require("dotenv").config();
@@ -17,6 +19,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
+const uploadTempDir = path.join(__dirname, "tmp");
+if (!fs.existsSync(uploadTempDir)) {
+  fs.mkdirSync(uploadTempDir, { recursive: true });
+}
+
+app.use(fileupload({
+  tempFileDir: uploadTempDir,
+  useTempFiles: true,
+  createParentPath: true,
+}));
+
 // ✅ Handlebars engine (layouts + partials)
 app.engine(
   "hbs",
@@ -33,6 +46,7 @@ app.set("views", path.join(__dirname, "src/views"));
 
 // ✅ estáticos
 app.use(express.static(path.join(__dirname, "src/public")));
+app.use('/uploads', express.static('files'))
 
 // ✅ rutas
 app.use("/api", apiRoutes);

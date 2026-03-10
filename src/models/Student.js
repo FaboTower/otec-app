@@ -11,6 +11,10 @@ const Student = sequelize.define("Student", {
     allowNull: false,
     unique: true,
   },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
 });
 
 module.exports = Student;

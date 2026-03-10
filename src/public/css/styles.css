@@ -23,6 +23,19 @@ body{ margin:0; font-family:var(--font); background:var(--bg); color:var(--text)
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255,255,255,.06);
 }
+.nav-right{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-avatar{
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.05);
+}
 .navbar a{ color: var(--text); text-decoration:none; margin-right: 12px; }
 .brand{ font-weight:700; color: var(--accent) !important; }
 

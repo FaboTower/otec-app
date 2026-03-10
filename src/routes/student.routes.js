@@ -13,4 +13,6 @@ router.post("/", adminAuth, StudentController.create);
 router.put("/:id", adminAuth, StudentController.update);
 router.delete("/:id", adminAuth, StudentController.remove);
 
+router.post("/:id/image", StudentController.uploadImage);
+
 module.exports = router;
